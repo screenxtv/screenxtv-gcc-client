@@ -1,8 +1,8 @@
 
 KeyValue SCAN_SETTINGS[]={
 	{"slug","slug (default:auto)"},
-	{"screen","casting screen name (default: screenxtv)"},
-	{"color","terminal color (default:white)"},
+	{"screen","screen to attach (default: screenxtv)"},
+	{"color","terminal color (white,black,green,novel)"},
 	{"title","title"},
 	{"description","description"},
 	{NULL,NULL}
@@ -15,7 +15,7 @@ KeyValue DEFAULT_SETTINGS[]={
 	{"slug",""},
 	{"screen","screenxtv"},
 	{"color","white"},
-	{"title","the title"},
-	{"description","the description"},
+	{"title","no title"},
+	{"description","no description"},
 	{NULL,NULL},
 };

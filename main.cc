@@ -79,6 +79,7 @@ void onclose(KVSocket*sock){
 void ondata(KVSocket*sock,char*key,char*value){
 	if(strcmp(key,"slug")==0){
 		int len=strlen(value);
+		if(!len)return;
 		value[0]=value[len-1]='\0';
 		config->put("slug",value+1);
 		config->save();
@@ -100,8 +101,9 @@ int main(int argc, char *argv[]){
 		for(int i=0;SCAN_SETTINGS[i].key;i++){
 			KeyValue kv=SCAN_SETTINGS[i];
 			printf("%s\n>",kv.value);fflush(stdout);
-			scanf("%s",buf);
-			config->put(kv.key,buf);
+			fgets(buf,sizeof(buf),stdin);
+			char*value=trim(buf);
+			if(strlen(value))config->put(kv.key,value);
 		}
 		config->save();
 	}
@@ -127,7 +129,7 @@ int main(int argc, char *argv[]){
 	setenv("TERM","vt100",1);
 	setenv("LANG","ja_JP.UTF-8",1);
 	if(!(pid=forkpty(&fd,NULL,NULL,&win)))
-		execlp("screen","screen","-x",argc>1?argv[1]:"screenx","-R",NULL);
+		execlp("screen","screen","-x",config->get("screen"),"-R",NULL);
 	pthread_t ptt;
 	//pthread_create(&ptt,NULL,loop_chat,(void*)"/Users/tomoya/.Trash/chat_in");
 	pthread_create(&ptt,NULL,loop_fdread,NULL);
