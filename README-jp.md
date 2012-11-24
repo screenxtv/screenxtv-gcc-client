@@ -1,6 +1,7 @@
 ### ScreenXを使えばあなたのターミナル画面を生中継できます。
+### 勉強会の配信、講義、ペアプログラミングなどのシーンでご活用ください。
 
-### 勉強会の配信、授業／講義、ペアプログラミングなどに。
+
 
 [![Screenshot](https://raw.github.com/tompng/screenxtv-client/master/ss-screenxtv.png)](http://screenx.tv)
 
