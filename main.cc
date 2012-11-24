@@ -1,4 +1,3 @@
-//g++ main.cc -lpthread -lutil
 #include "lib/conf.h"
 #include "lib/socket.h"
 #include "settings.h"
