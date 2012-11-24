@@ -32,13 +32,20 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 5. Done! Open the given URL with your web browser and share it with your friends :)
 
+
 ## How to Stop/Resume
 
-To stop broadcasting, just type `exit` in your terminal.
+1. To stop broadcasting, just type exit from the terminal.
 
-ScreenX TV holds your session for 10 minutes after `exit`. 
+   `exit`
 
-So, if you'd like to resume, just re-run the client program by `./screenxtv-client`. The client program automatically detects and attaches the session.
+   NOTE: ScreenX TV holds your session for __10 minutes__ after `exit`. 
+
+2. If you'd like to resume, just re-run the client program.
+
+   `./screenxtv-client`.
+
+   Then, the program automatically detects and attaches the session to resume.
 
 ## License
 
