@@ -155,6 +155,7 @@ int main(int argc, char *argv[]){
 	sock->send("init",buf);
 
 	char*slug=(char*)waitForSlug->wait();
+	if(!slug)return 0;
 	if(slug){
 		for(int i=0;slug[i];i++)if(slug[i]=='#')slug[i]='\0';
 		printf("Your URL is http://%s/%s\n",config->get("host"),slug);
