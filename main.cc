@@ -24,9 +24,36 @@
 #endif
 
 
+class WaitObject{
+public:
+	pthread_mutex_t mutex;
+	pthread_cond_t cond;
+	void*data;
+	bool ended;
+	WaitObject(){
+		ended=false;
+		pthread_mutex_init(&mutex,NULL);
+		pthread_cond_init(&cond,NULL);
+	}
+	void*wait(){
+		pthread_mutex_lock(&mutex);
+		if(!ended)pthread_cond_wait(&cond,&mutex);
+		pthread_mutex_unlock(&mutex);
+		return data;
+	}
+	void notify(void*d){
+		pthread_mutex_lock(&mutex);
+		data=d;ended=true;
+		pthread_cond_signal(&cond);
+		pthread_mutex_unlock(&mutex);
+	}
+};
+
+
+
 int fd,pid;
 winsize win;
-
+WaitObject*waitForSlug;
 KVSocket*sock;
 Config*config=NULL;
 void*loop_chat(void*data){
@@ -74,6 +101,7 @@ void*loop_fdwrite(void*){
 	}
 }
 void onclose(KVSocket*sock){
+	waitForSlug->notify(NULL);
 	fclose(stdin);
 }
 void ondata(KVSocket*sock,char*key,char*value){
@@ -81,7 +109,9 @@ void ondata(KVSocket*sock,char*key,char*value){
 		int len=strlen(value);
 		if(!len)return;
 		value[0]=value[len-1]='\0';
-		config->put("slug",value+1);
+		char*slug=value+1;
+		waitForSlug->notify(strclone(slug));
+		config->put("slug",slug);
 		config->save();
 	}
 	if(strcmp(key,"listener")==0){
@@ -91,34 +121,48 @@ void ondata(KVSocket*sock,char*key,char*value){
 	}if(strcmp(key,"init")==0){
 
 	}if(strcmp(key,"error")==0){
+		fprintf(stderr,"error: %s\n",value);
 		fclose(stdin);
 	}
 }
+
 int main(int argc, char *argv[]){
+	waitForSlug=new WaitObject();
 	char buf[65536];
 	config=new Config("screenxtv.conf",DEFAULT_SETTINGS);
 	if(!config->load()){
 		for(int i=0;SCAN_SETTINGS[i].key;i++){
 			KeyValue kv=SCAN_SETTINGS[i];
-			printf("%s\n>",kv.value);fflush(stdout);
+			printf("%s\n> ",kv.value);fflush(stdout);
 			fgets(buf,sizeof(buf),stdin);
 			char*value=trim(buf);
 			if(strlen(value))config->put(kv.key,value);
 		}
 		config->save();
 	}
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
-	signal(SIGWINCH,winchfunc);
-	signal(SIGCHLD,chldfunc);
+	char*color=config->get("color");
+	for(int i=0;color[i];i++){char c=color[i];if('A'<=c&&c<='Z')color[i]+='a'-'A';}
 
 	sock=new KVSocket(config->get("host"),8000);
 	sock->setCloseCallback(onclose);
 	sock->setDataCallback(ondata);
 
+	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
+	signal(SIGWINCH,winchfunc);
+	signal(SIGCHLD,chldfunc);
+
 	sprintf(buf,"{\"width\":%d,\"height\":%d,\"slug\":\"%s\",\"info\":{\"color\":\"%s\",\"title\":\"%s\",\"description\":\"%s\"}}",
 		win.ws_col,win.ws_row,config->get("slug"),config->get("color"),config->get("title"),config->get("description"));
 	sock->send("init",buf);
 
+	char*slug=(char*)waitForSlug->wait();
+	if(slug){
+		for(int i=0;slug[i];i++)if(slug[i]=='#')slug[i]='\0';
+		printf("Your URL is http://%s/%s\n",config->get("host"),slug);
+		printf("Press Enter to start broadcasting\n> ");fflush(stdout);
+		char tmp[65536];
+		fgets(tmp,65536,stdin);
+	}
 
 	struct termios tm,tm2;
 	tcgetattr(STDIN_FILENO,&tm);
