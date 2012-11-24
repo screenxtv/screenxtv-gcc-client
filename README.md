@@ -22,6 +22,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
    
 2. Compile the source.
 
+   `cd screenxtv-client`
    `g++ -o screenxtv-client main.cc -lpthread -lutil`
    
 3. Run the `screenxtv-client`.
