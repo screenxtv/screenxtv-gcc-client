@@ -1,9 +1,7 @@
-# ScreenX TV
-
 ScreenX TV Client is software that enables you to broadcast your terminal to the web. 
 The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real time.
 
-[![Screenshot](https://github.com/tompng/screenx/blob/master/ss-screenxtv.png)](http://screenx.tv)
+[![Screenshot](https://raw.github.com/tompng/screenxtv-client/master/ss-screenxtv.png)](http://screenx.tv)
 
 ## Requirements
 
