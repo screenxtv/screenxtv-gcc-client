@@ -1,7 +1,7 @@
 ScreenX TV Client is software that enables you to broadcast your terminal to the web. 
 The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real time.
 
-[![Screenshot](https://raw.github.com/tompng/screenxtv-client/master/ss-screenxtv.png)](http://screenx.tv)
+[![Screenshot](https://raw.github.com/tompng/screenxtv-client/master/images/ss-screenxtv.png)](http://screenx.tv)
 
 ## Requirements
 
@@ -32,6 +32,8 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 4. Then, fill in the given items to start broadcasting your terminal.
 
+   ![ss-start](https://raw.github.com/tompng/screenxtv-client/master/images/ss-start.png)
+
 5. Done! Open the given URL with your web browser and share it with your friends :)
 
 
@@ -42,12 +44,16 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
    `exit`
 
    NOTE: ScreenX TV holds your session for __10 minutes__ after `exit`. 
+   
+   ![ss-stop](https://raw.github.com/tompng/screenxtv-client/master/images/ss-stop.png)
 
 2. If you'd like to resume, just re-run the client program.
 
    `./screenxtv-client`.
 
    Then, the program automatically detects and attaches the session to resume.
+   
+   ![ss-resume](https://raw.github.com/tompng/screenxtv-client/master/images/ss-resume.png)
 
 ## License
 

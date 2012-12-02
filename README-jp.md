@@ -2,8 +2,8 @@
 ### 勉強会の配信、講義、ペアプログラミングなどのシーンでご活用ください。
 
 
+[![Screenshot](https://raw.github.com/tompng/screenxtv-client/master/images/ss-screenxtv.png)](http://screenx.tv)
 
-[![Screenshot](https://raw.github.com/tompng/screenxtv-client/master/ss-screenxtv.png)](http://screenx.tv)
 
 ## 必要なソフトウェア
 
@@ -34,6 +34,8 @@
 
 4. 必要な項目（配信URL、タイトルなど）を入力して、Enter を押します。
 
+   ![ss-start](https://raw.github.com/tompng/screenxtv-client/master/images/ss-start.png)
+   
 5. 配信完了！配信URLからターミナル画面が配信されるので、URLを友人などにシェアしてみてください :-)
 
 
@@ -45,11 +47,15 @@
 
    NOTE: ScreenX TV は、 `exit` してから最長 __10分間__ セッションを保持します。
 
+   ![ss-stop](https://raw.github.com/tompng/screenxtv-client/master/images/ss-stop.png)
+   
 2. 配信停止の状態から、再び配信中のターミナル画面にアタッチしたい場合は、再度配信ツールを起動して下さい。
 
    `./screenxtv-client`
 
    配信ツールを起動すると、配信中のターミナル画面に自動的にアタッチしてくれます。
+   
+   ![ss-resume](https://raw.github.com/tompng/screenxtv-client/master/images/ss-resume.png)   
 
 ## License
 
