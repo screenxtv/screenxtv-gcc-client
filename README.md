@@ -1,7 +1,7 @@
 ScreenX TV Client is software that enables you to broadcast your terminal to the web. 
 The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real time.
 
-[![Screenshot](https://raw.github.com/tompng/screenxtv-client/master/images/ss-screenxtv.png)](http://screenx.tv)
+[![Screenshot](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-screenxtv.png)](http://screenx.tv)
 
 ## Requirements
 
@@ -18,21 +18,21 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 1. Download source of ScreenX TV Client.
 
-   `git clone https://github.com/tompng/screenxtv-client.git`
+   `git clone https://github.com/tompng/screenxtv-gcc-client.git`
    
 2. Compile the source.
 
-   `cd screenxtv-client`
+   `cd screenxtv-gcc-client`
 
-   `g++ -o screenxtv-client main.cc -lpthread -lutil`
+   `g++ -o screenxtv-gcc-client main.cc -lpthread -lutil`
    
 3. Run the ScreenX TV Client.
 
-   `./screenxtv-client`
+   `./screenxtv-gcc-client`
 
 4. Then, fill in the given items to start broadcasting your terminal.
 
-   ![ss-start](https://raw.github.com/tompng/screenxtv-client/master/images/ss-start.png)
+   ![ss-start](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-start.png)
 
 5. Done! Open the given URL with your web browser and share it with your friends :)
 
@@ -45,15 +45,15 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
    NOTE: ScreenX TV holds your session for __10 minutes__ after the `exit`. 
    
-   ![ss-stop](https://raw.github.com/tompng/screenxtv-client/master/images/ss-stop.png)
+   ![ss-stop](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-stop.png)
 
 2. If you'd like to resume, just re-run the client program.
 
-   `./screenxtv-client`.
+   `./screenxtv-gcc-client`.
 
    Then, the program automatically detects and attaches the session to resume.
    
-   ![ss-resume](https://raw.github.com/tompng/screenxtv-client/master/images/ss-resume.png)
+   ![ss-resume](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-resume.png)
 
 ## License
 
