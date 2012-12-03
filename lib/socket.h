@@ -8,6 +8,8 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <string.h>
+#include "macros.h"
 
 int socketconnect(const char*host,int port){
 	char strport[6];
