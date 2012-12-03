@@ -16,7 +16,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 ## How to Start
 
-1. Download source of ScreenX TV for client.
+1. Download source of ScreenX TV Client.
 
    `git clone https://github.com/tompng/screenxtv-client.git`
    
@@ -26,7 +26,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
    `g++ -o screenxtv-client main.cc -lpthread -lutil`
    
-3. Run the ScreenX TV for Client.
+3. Run the ScreenX TV Client.
 
    `./screenxtv-client`
 
@@ -43,7 +43,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
    `exit`
 
-   NOTE: ScreenX TV holds your session for __10 minutes__ after `exit`. 
+   NOTE: ScreenX TV holds your session for __10 minutes__ after the `exit`. 
    
    ![ss-stop](https://raw.github.com/tompng/screenxtv-client/master/images/ss-stop.png)
 
