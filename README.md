@@ -39,7 +39,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 ## How to Stop/Resume
 
-1. To stop broadcasting, type `exit` from the screen.
+1. To stop broadcasting, type `exit` in the broadcasted screen.
 
    NOTE: ScreenX TV holds your session for __10 minutes__ after the `exit`. 
    
