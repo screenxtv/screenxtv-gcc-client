@@ -177,7 +177,7 @@ int main(int argc, char *argv[]){
 
 	tcsetattr(STDIN_FILENO,TCSANOW,&tm);
 	setenv("TERM","vt100",1);
-	setenv("LANG","ja_JP.UTF-8",1);
+	setenv("LANG","en_US.UTF-8",1);
 	if(!(pid=forkpty(&fd,NULL,NULL,&win)))
 		execlp("screen","screen","-x",config->get("screen"),"-R",NULL);
 	pthread_t ptt;
