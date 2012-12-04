@@ -1,4 +1,4 @@
-TARGET  := screenxtv-client
+TARGET  := screenxtv-gcc-client
 CC		= g++
 LIBS    = -lpthread -lutil
 LPATH	= lib
