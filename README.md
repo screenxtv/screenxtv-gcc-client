@@ -47,7 +47,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 2. If you'd like to resume, re-run the client program.
 
-   `./screenxtv-gcc-client`.
+   `./screenxtv-gcc-client`
 
    Then, the program automatically detects and attaches the session to resume.
    
