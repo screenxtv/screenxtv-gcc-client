@@ -58,6 +58,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 ## Related Works
 
 - [ScreenX TV Sandbox](https://github.com/yasulab/screenxtv-sandbox)
+- [ScreenX](https://github.com/tompng/screenx) (internal software)
 
 ## License
 
