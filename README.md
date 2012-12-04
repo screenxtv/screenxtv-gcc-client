@@ -39,15 +39,13 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 ## How to Stop/Resume
 
-1. To stop broadcasting, just exit from the screen.
-
-   `exit`
+1. To stop broadcasting, type `exit` from the screen.
 
    NOTE: ScreenX TV holds your session for __10 minutes__ after the `exit`. 
    
    ![ss-stop](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-stop.png)
 
-2. If you'd like to resume, just re-run the client program.
+2. If you'd like to resume, re-run the client program.
 
    `./screenxtv-gcc-client`.
 
