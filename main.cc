@@ -22,7 +22,8 @@
 #include <util.h>
 #endif
 
-
+void exitWithMessage(const char*);
+struct termios termios_saved;
 class WaitObject{
 public:
 	pthread_mutex_t mutex;
@@ -51,7 +52,6 @@ public:
 
 
 int fd,pid;
-winsize win;
 WaitObject*waitForSlug;
 KVSocket*sock;
 Config*config=NULL;
@@ -76,8 +76,11 @@ void*loop_chat(void*data){
 	return NULL;
 }
 
-void chldfunc(int n){wait(NULL);}
+void chldfunc(int n){
+  exitWithMessage("broadcast end.");
+}
 void*winchthreadfunc(void*){
+	winsize win;
 	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
 	char buf[256];
 	sprintf(buf,"{\"width\":%d,\"height\":%d}",win.ws_col,win.ws_row);
@@ -149,7 +152,7 @@ int main(int argc, char *argv[]){
 	sock=new KVSocket(config->get("host"),8000);
 	sock->setCloseCallback(onclose);
 	sock->setDataCallback(ondata);
-
+	winsize win;
 	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
 	signal(SIGWINCH,winchfunc);
 	signal(SIGCHLD,chldfunc);
@@ -162,27 +165,34 @@ int main(int argc, char *argv[]){
 	if(!slug)return 0;
 	if(slug){
 		for(int i=0;slug[i];i++)if(slug[i]=='#')slug[i]='\0';
-		printf("Your URL is http://%s/%s\n",config->get("host"),slug);
+		printf("Your URL is http://%s/%s\n\n",config->get("host"),slug);
 		printf("Press Enter to start broadcasting\n> ");fflush(stdout);
 		char tmp[65536];
 		fgets(tmp,65536,stdin);
 	}
 
-	struct termios tm,tm2;
-	tcgetattr(STDIN_FILENO,&tm);
-	tm2=tm;
-	cfmakeraw(&tm2);
+	tcgetattr(STDIN_FILENO,&termios_saved);
+	struct termios tm=termios_saved;
+	cfmakeraw(&tm);
 
-	tcsetattr(STDIN_FILENO,TCSANOW,&tm2);
+	tcsetattr(STDIN_FILENO,TCSANOW,&tm);
 	setenv("TERM","vt100",1);
 	setenv("LANG","ja_JP.UTF-8",1);
 	if(!(pid=forkpty(&fd,NULL,NULL,&win)))
 		execlp("screen","screen","-x",config->get("screen"),"-R",NULL);
 	pthread_t ptt;
-	//pthread_create(&ptt,NULL,loop_chat,(void*)"/Users/tomoya/.Trash/chat_in");
 	pthread_create(&ptt,NULL,loop_fdread,NULL);
 	loop_fdwrite(NULL);
-	tcsetattr(STDIN_FILENO,TCSANOW,&tm);
-	tcsetattr(STDOUT_FILENO,TCSANOW,&tm);
-	tcsetattr(STDERR_FILENO,TCSANOW,&tm);
+	exitWithMessage("broadcast end.");
+}
+
+void exitWithMessage(const char*msg){
+	tcsetattr(STDIN_FILENO,TCSANOW,&termios_saved);
+	tcsetattr(STDOUT_FILENO,TCSANOW,&termios_saved);
+	tcsetattr(STDERR_FILENO,TCSANOW,&termios_saved);
+	winsize win;
+	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
+	printf("\e[?1l\e[>\e[1;%dr\e[%d;1H",win.ws_row,win.ws_row);
+	printf("%s\n",msg);
+	exit(0);
 }
