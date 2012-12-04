@@ -128,7 +128,7 @@ void ondata(KVSocket*sock,char*key,char*value){
 int main(int argc, char *argv[]){
 	waitForSlug=new WaitObject();
 	char buf[65536];
-	config=new Config("screenxtv.conf",DEFAULT_SETTINGS);
+	config=new Config(argc==2?argv[1]:"screenxtv.conf",DEFAULT_SETTINGS);
 	if(!config->load()){
 		for(int i=0;SCAN_SETTINGS[i].key;i++){
 			KeyValue kv=SCAN_SETTINGS[i];
