@@ -60,6 +60,7 @@
 ## 関連レポジトリ
 
 - [ScreenX TV Sandbox](https://github.com/yasulab/screenxtv-sandbox)
+- [ScreenX](https://github.com/tompng/screenx) (内部のソフトウェア)
 
 ## License
 
