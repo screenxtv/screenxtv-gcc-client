@@ -57,6 +57,10 @@
    
    ![ss-resume](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-resume.png)   
 
+## 関連レポジトリ
+
+- [ScreenX TV Sandbox](https://github.com/yasulab/screenxtv-sandbox)
+
 ## License
 
 Copyright (c) 2012 Tomoya Ishida
