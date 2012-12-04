@@ -77,12 +77,16 @@ void*loop_chat(void*data){
 }
 
 void chldfunc(int n){wait(NULL);}
-void winchfunc(int n){
+void*winchthreadfunc(void*){
 	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
 	char buf[256];
 	sprintf(buf,"{\"width\":%d,\"height\":%d}",win.ws_col,win.ws_row);
 	sock->send("winch",buf);
 	ioctl(fd,TIOCSWINSZ,&win);
+}
+void winchfunc(int n){
+  pthread_t ptt;
+  pthread_create(&ptt,NULL,winchthreadfunc,NULL);
 }
 void*loop_fdread(void*){
 	char buf[8192];int rd;
