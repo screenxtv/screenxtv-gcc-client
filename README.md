@@ -55,6 +55,10 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
    
    ![ss-resume](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-resume.png)
 
+## Related Works
+
+- [ScreenX TV Sandbox](https://github.com/yasulab/screenxtv-sandbox)
+
 ## License
 
 Copyright (c) 2012 Tomoya Ishida
