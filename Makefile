@@ -17,6 +17,9 @@ main.out: main.cc
 $(OBJS): $(HEADERS)
 	${CC} -c -o $@ $< 
 
+run::
+	./${TARGET}
+
 clean:: 
 	-rm -f *.o *.out ${TARGET} ${LPATH}/*.out
 
