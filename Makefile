@@ -9,7 +9,7 @@ OBJS	:= $(patsubst %.h,%.out,$(HEADERS))
 all:: ${TARGET} 
 
 ${TARGET}: main.out $(OBJS)
-	${CC}  -o ${TARGET} main.out ${LIBS}
+	${CC} -o ${TARGET} main.out ${LIBS}
 
 main.out: main.cc
 	${CC} -c -o $@ $^ 
