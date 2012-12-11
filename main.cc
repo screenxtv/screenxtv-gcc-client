@@ -1,5 +1,7 @@
 #include "lib/conf.h"
 #include "lib/socket.h"
+#include "lib/args.h"
+#include "lib/macros.h"
 #include "settings.h"
 #include <fcntl.h>
 #include <stdio.h>
@@ -24,68 +26,25 @@
 
 void exitWithMessage(const char*);
 struct termios termios_saved;
-class WaitObject{
-public:
-	pthread_mutex_t mutex;
-	pthread_cond_t cond;
-	void*data;
-	bool ended;
-	WaitObject(){
-		ended=false;
-		pthread_mutex_init(&mutex,NULL);
-		pthread_cond_init(&cond,NULL);
-	}
-	void*wait(){
-		pthread_mutex_lock(&mutex);
-		if(!ended)pthread_cond_wait(&cond,&mutex);
-		pthread_mutex_unlock(&mutex);
-		return data;
-	}
-	void notify(void*d){
-		pthread_mutex_lock(&mutex);
-		data=d;ended=true;
-		pthread_cond_signal(&cond);
-		pthread_mutex_unlock(&mutex);
-	}
-};
-
-
 
 int fd,pid;
-WaitObject*waitForSlug;
 KVSocket*sock;
 Config*config=NULL;
-void*loop_chat(void*data){
-	char*file=(char*)data;
-	sock->send("chat",file);
-	FILE*fp=fopen(file,"w+");
-	if(!fp)return NULL;
-	rewind(fp);
-	char buf[1024];
-	while(true){
-		usleep(1000);
-		rewind(fp);
-		int len=fread(buf,1,sizeof(buf),fp);
-		if(!len)continue;
-		buf[len]='\0';
-		if(!sock->send("chat",trim(buf)))break;
-		fclose(fp);
-		fp=fopen(file,"w+");
-	}
-	fclose(fp);
-	return NULL;
-}
 
 void chldfunc(int n){
   exitWithMessage("broadcast end.");
 }
+
+void sendwinch(){
+  winsize win;
+  ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
+  char buf[256];
+  sprintf(buf,"{\"width\":%d,\"height\":%d}",win.ws_col,win.ws_row);
+  sock->send("winch",buf);
+  ioctl(fd,TIOCSWINSZ,&win);
+}
 void*winchthreadfunc(void*){
-	winsize win;
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
-	char buf[256];
-	sprintf(buf,"{\"width\":%d,\"height\":%d}",win.ws_col,win.ws_row);
-	sock->send("winch",buf);
-	ioctl(fd,TIOCSWINSZ,&win);
+  sendwinch();
 }
 void winchfunc(int n){
   pthread_t ptt;
@@ -100,99 +59,104 @@ void*loop_fdread(void*){
 	fclose(stdin);
 }
 void*loop_fdwrite(void*){
-	char buf[8192];
-	int len;
-	while((len=read(STDIN_FILENO,buf,sizeof(buf)))>0){
-		write(fd,buf,len);
-	}
-}
-void onclose(KVSocket*sock){
-	waitForSlug->notify(NULL);
-	fclose(stdin);
-}
-void ondata(KVSocket*sock,char*key,char*value){
-	if(strcmp(key,"slug")==0){
-		int len=strlen(value);
-		if(!len)return;
-		value[0]=value[len-1]='\0';
-		char*slug=value+1;
-		waitForSlug->notify(strclone(slug));
-		config->put("slug",slug);
-		config->save();
-	}
-	if(strcmp(key,"listener")==0){
-		
-	}if(strcmp(key,"chat")==0){
-		
-	}if(strcmp(key,"init")==0){
-
-	}if(strcmp(key,"error")==0){
-		fprintf(stderr,"error: %s\n",value);
-		fclose(stdin);
-	}
+  char buf[8192];
+  int len;
+  while((len=read(STDIN_FILENO,buf,sizeof(buf)))>0){
+    write(fd,buf,len);
+  }
 }
 
 int main(int argc, char *argv[]){
-	waitForSlug=new WaitObject();
-	char buf[65536];
-	config=new Config(argc==2?argv[1]:"screenxtv.conf",DEFAULT_SETTINGS);
-	if(!config->load()){
-		for(int i=0;SCAN_SETTINGS[i].key;i++){
-			KeyValue kv=SCAN_SETTINGS[i];
-			printf("%s\n> ",kv.value);fflush(stdout);
-			fgets(buf,sizeof(buf),stdin);
-			char*value=trim(buf);
-			if(strlen(value))config->put(kv.key,value);
-		}
-		config->save();
-	}
-	char*color=config->get("color");
-	for(int i=0;color[i];i++){char c=color[i];if('A'<=c&&c<='Z')color[i]+='a'-'A';}
+  winsize win;
+  char buf[65536];
+  tcgetattr(STDIN_FILENO,&termios_saved);
+  OPTION option={0,0,0,0,0,0,0,0,0};
+  char default_file[1024];
+  sprintf(default_file,"%s/.screenxtv.yml",getenv("HOME"));
+  const char*file=default_file;
+  if(argc==2&&argv[1][0]!='-'){
+    file=argv[1];
+  }else{
+    option=parseArgs(argv+1);
+    if(option.help){showHelp();return 0;}
+    if(option.file)file=option.file;
+  }
 
-	sock=new KVSocket(config->get("host"),8000);
-	sock->setCloseCallback(onclose);
-	sock->setDataCallback(ondata);
-	winsize win;
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
-	signal(SIGWINCH,winchfunc);
-	signal(SIGCHLD,chldfunc);
-
-	sprintf(buf,"{\"width\":%d,\"height\":%d,\"slug\":\"%s\",\"info\":{\"color\":\"%s\",\"title\":\"%s\",\"description\":\"%s\"}}",
-		win.ws_col,win.ws_row,config->get("slug"),config->get("color"),config->get("title"),config->get("description"));
-	sock->send("init",buf);
-
-	char*slug=(char*)waitForSlug->wait();
-	if(!slug)return 0;
-	if(slug){
-		for(int i=0;slug[i];i++)if(slug[i]=='#')slug[i]='\0';
-		printf("Your URL is http://%s/%s\n\n",config->get("host"),slug);
-		printf("Press Enter to start broadcasting\n> ");fflush(stdout);
-		char tmp[65536];
-		fgets(tmp,65536,stdin);
-	}
-
-	tcgetattr(STDIN_FILENO,&termios_saved);
-	struct termios tm=termios_saved;
-	cfmakeraw(&tm);
-
-	tcsetattr(STDIN_FILENO,TCSANOW,&tm);
-	setenv("TERM","vt100",1);
-	setenv("LANG","en_US.UTF-8",1);
-	if(!(pid=forkpty(&fd,NULL,NULL,&win)))
-		execlp("screen","screen","-x",config->get("screen"),"-R",NULL);
-	pthread_t ptt;
-	pthread_create(&ptt,NULL,loop_fdread,NULL);
-	loop_fdwrite(NULL);
-	exitWithMessage("broadcast end.");
+  config=new Config(file,DEFAULT_SETTINGS);
+  if(option.reset)config->clear();
+  if(option.url)config->put("url",option.url);
+  if(option.title)config->put("title",option.title);
+  if(option.color)config->put("color",option.color);
+  if(option.url_read)config->put("url",NULL);
+  if(option.title_read)config->put("title",NULL);
+  if(option.color_read)config->put("color",NULL);
+  for(int i=0;SCAN_SETTINGS[i].key;i++){
+    KeyValue kv=SCAN_SETTINGS[i];
+    if(config->get(kv.key))continue;
+    printf("%s\n> ",kv.value);fflush(stdout);
+    fgets(buf,sizeof(buf),stdin);
+    char*value=trim(buf);
+    if(strlen(value))config->put(kv.key,value);
+  }
+    
+  
+  char key[256],value[65536];
+  while(true){
+    config->save();
+    ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
+    sprintf(buf,"{\"width\":%d,\"height\":%d,\"slug\":\"%s#%s\",\"info\":{\"color\":\"%s\",\"title\":\"%s\"}}",
+	    win.ws_col,win.ws_row,config->get("url"),config->get("urlhash"),config->get("color"),config->get("title"));
+    sock=new KVSocket("screenx.tv",8000);
+    sock->send("init",buf);
+    sock->read(key,value,sizeof(key),sizeof(value));
+    if(streq(key,"slug")){
+      char*hash=NULL;
+      value[0]=value[strlen(value)-1]='\0';
+      for(int i=1;value[i];i++){
+	if(value[i]!='#')continue;
+	value[i]='\0';
+	hash=value+i+1;
+	break;
+      }
+      config->put("url",value+1);
+      config->put("urlhash",hash);
+      break;
+    }
+    printf("url already in use. another url?\n> ");fflush(stdout);
+    fgets(buf,sizeof(buf),stdin);
+    char*val=trim(buf);
+    if(strlen(val))config->put("url",val);
+  }
+  config->save();
+  
+  printf("Your URL is http://screenx.tv/%s\n\n",config->get("url"));
+  printf("Press Enter to start broadcasting\n> ");fflush(stdout);
+  fgets(buf,sizeof(buf),stdin);
+  
+  signal(SIGWINCH,winchfunc);
+  signal(SIGCHLD,chldfunc);  
+  sendwinch();
+  struct termios tm=termios_saved;
+  cfmakeraw(&tm);
+  
+  tcsetattr(STDIN_FILENO,TCSANOW,&tm);
+  setenv("TERM","vt100",1);
+  setenv("LANG","en_US.UTF-8",1);
+  if(!(pid=forkpty(&fd,NULL,NULL,&win)))
+    execlp("screen","screen","-x",config->get("screen"),"-R",NULL);
+  pthread_t ptt;
+  pthread_create(&ptt,NULL,loop_fdread,NULL);
+  loop_fdwrite(NULL);
+  exitWithMessage("broadcast end.");
 }
 
 void exitWithMessage(const char*msg){
-	tcsetattr(STDIN_FILENO,TCSANOW,&termios_saved);
-	tcsetattr(STDOUT_FILENO,TCSANOW,&termios_saved);
-	tcsetattr(STDERR_FILENO,TCSANOW,&termios_saved);
-	winsize win;
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
-	printf("\e[?1l\e[>\e[1;%dr\e[%d;1H",win.ws_row,win.ws_row);
-	printf("%s\n",msg);
-	exit(0);
+  tcsetattr(STDIN_FILENO,TCSANOW,&termios_saved);
+  tcsetattr(STDOUT_FILENO,TCSANOW,&termios_saved);
+  tcsetattr(STDERR_FILENO,TCSANOW,&termios_saved);
+  winsize win;
+  ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
+  printf("\e[?1l\e[>\e[1;%dr\e[%d;1H",win.ws_row,win.ws_row);
+  printf("%s\n",msg);
+  exit(0);
 }

@@ -1,6 +1,6 @@
 
 KeyValue SCAN_SETTINGS[]={
-	{"slug","Create a new URL. If given \"foo\", your URL will be \"http://screenx.tv/foo\"."},
+	{"url","Create a new URL. If given \"foo\", your URL will be \"http://screenx.tv/foo\"."},
 	{"color","Terminal Color [BLACK/white/green/novel]"},
 	{"title","Title"},
 	{NULL,NULL}
@@ -8,12 +8,10 @@ KeyValue SCAN_SETTINGS[]={
 
 
 KeyValue DEFAULT_SETTINGS[]={
-	{"host","screenx.tv"},
-	{"port","8000"},
-	{"slug",""},
+	{"url",""},
+	{"urlhash",""},
 	{"screen","screenxtv"},
 	{"color","black"},
 	{"title","no title"},
-	{"description","no description"},
 	{NULL,NULL},
 };
