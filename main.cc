@@ -80,13 +80,10 @@ int main(int argc, char *argv[]){
   char default_file[1024];
   sprintf(default_file,"%s/.screenxtv.yml",getenv("HOME"));
   const char*file=default_file;
-  if(argc==2&&argv[1][0]!='-'){
-    file=argv[1];
-  }else{
-    option=parseArgs(argv+1);
-    if(option.help){showHelp();return 0;}
-    if(option.file)file=option.file;
-  }
+  option=parseArgs(argv+1);
+  if(option.help){showHelp();return 0;}
+  if(option.file)file=option.file;
+
 
   config=new Config(file);
   if(option.reset)config->clear();
