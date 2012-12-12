@@ -1,4 +1,4 @@
-#include "macros.h"
+#include "lib/macros.h"
 #include <stdio.h>
 
 
@@ -9,13 +9,12 @@ struct OPTION{
 
 void printOptions(OPTION*op){
   printf("url:%s\ntitle:%s\ncolor:%s\nfile:%s\n",
-	 op->url,
-	 op->title,
-	 op->color,
-	 op->file);
+  op->url,
+  op->title,
+  op->color,
+  op->file);
   printf("help:%d\nreset:%d\n-u:%d\n-t:%d\n-c:%d\n",
-	 op->help,op->reset,op->url_read,op->title_read,op->color_read);
-	 
+  op->help,op->reset,op->url_read,op->title_read,op->color_read);
 }
 
 void optput(OPTION*op,const char*key,const char*val){
@@ -32,7 +31,12 @@ void optflag(OPTION*op,const char*key){
   else if(streq(key,"-c"))op->color_read=true;
 }
 void showHelp(){
-  printf("some help message");
+  printf("Usage: screenxtv [options]\n");
+  printf("  -u [url]\n");
+  printf("  -c [color]\n");
+  printf("  -t [title]\n");
+  printf("  -reset\n");
+  printf("  -f config_file\n");
 }
 OPTION parseArgs(char**argv){
   char*prev=NULL;

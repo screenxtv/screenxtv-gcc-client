@@ -45,12 +45,9 @@ class Config{
     }
     length=0;
   }
-  Config(const char*file,KeyValue*defconf){
+  Config(const char*file){
     filename=strclone(file);
     length=0;
-    for(int i=0;defconf[i].key;i++){
-      put(defconf[i].key,defconf[i].value);
-    }
     load();
   }
 };

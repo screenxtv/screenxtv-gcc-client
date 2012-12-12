@@ -1,7 +1,7 @@
 #include "lib/conf.h"
 #include "lib/socket.h"
-#include "lib/args.h"
 #include "lib/macros.h"
+#include "args.h"
 #include "settings.h"
 #include <fcntl.h>
 #include <stdio.h>
@@ -67,6 +67,12 @@ void*loop_fdwrite(void*){
 }
 
 int main(int argc, char *argv[]){
+  if(getenv("SCREENXTV_BROADCASTING")){
+    printf("cannot broadcast inside broadcasting screen\n");
+    return 0;
+  }
+  setenv("SCREENXTV_BROADCASTING","1",1);
+
   winsize win;
   char buf[65536];
   tcgetattr(STDIN_FILENO,&termios_saved);
@@ -82,7 +88,7 @@ int main(int argc, char *argv[]){
     if(option.file)file=option.file;
   }
 
-  config=new Config(file,DEFAULT_SETTINGS);
+  config=new Config(file);
   if(option.reset)config->clear();
   if(option.url)config->put("url",option.url);
   if(option.title)config->put("title",option.title);
@@ -91,12 +97,15 @@ int main(int argc, char *argv[]){
   if(option.title_read)config->put("title",NULL);
   if(option.color_read)config->put("color",NULL);
   for(int i=0;SCAN_SETTINGS[i].key;i++){
-    KeyValue kv=SCAN_SETTINGS[i];
-    if(config->get(kv.key))continue;
-    printf("%s\n> ",kv.value);fflush(stdout);
-    fgets(buf,sizeof(buf),stdin);
-    char*value=trim(buf);
-    if(strlen(value))config->put(kv.key,value);
+    ScanMsg sm=SCAN_SETTINGS[i];
+    if(config->get(sm.key))continue;
+    char*value=NULL;
+    if(sm.msg){
+      printf("%s\n> ",sm.msg);fflush(stdout);
+      fgets(buf,sizeof(buf),stdin);
+      char*value=trim(buf);
+    }
+    config->put(sm.key,value&&strlen(value)?value:sm.value);
   }
     
   
@@ -105,7 +114,8 @@ int main(int argc, char *argv[]){
     config->save();
     ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
     sprintf(buf,"{\"width\":%d,\"height\":%d,\"slug\":\"%s#%s\",\"info\":{\"color\":\"%s\",\"title\":\"%s\"}}",
-	    win.ws_col,win.ws_row,config->get("url"),config->get("urlhash"),config->get("color"),config->get("title"));
+      win.ws_col,win.ws_row,config->get("url"),config->get("urlhash"),config->get("color"),config->get("title"));
+    printf("%s\n",buf);
     sock=new KVSocket("screenx.tv",8000);
     sock->send("init",buf);
     sock->read(key,value,sizeof(key),sizeof(value));
@@ -113,10 +123,10 @@ int main(int argc, char *argv[]){
       char*hash=NULL;
       value[0]=value[strlen(value)-1]='\0';
       for(int i=1;value[i];i++){
-	if(value[i]!='#')continue;
-	value[i]='\0';
-	hash=value+i+1;
-	break;
+        if(value[i]!='#')continue;
+        value[i]='\0';
+        hash=value+i+1;
+        break;
       }
       config->put("url",value+1);
       config->put("urlhash",hash);
