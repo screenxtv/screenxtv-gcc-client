@@ -115,7 +115,6 @@ int main(int argc, char *argv[]){
     ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
     sprintf(buf,"{\"width\":%d,\"height\":%d,\"slug\":\"%s#%s\",\"info\":{\"color\":\"%s\",\"title\":\"%s\"}}",
       win.ws_col,win.ws_row,config->get("url"),config->get("urlhash"),config->get("color"),config->get("title"));
-    printf("%s\n",buf);
     sock=new KVSocket("screenx.tv",8000);
     sock->send("init",buf);
     sock->read(key,value,sizeof(key),sizeof(value));

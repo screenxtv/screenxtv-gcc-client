@@ -18,7 +18,7 @@ $(OBJS): $(HEADERS)
 	${CC} -c -o $@ $< 
 
 run::
-	./${TARGET}
+	./${TARGET} ${ARGS}
 
 clean:: 
 	-rm -f *.o *.out ${TARGET} ${LPATH}/*.out
