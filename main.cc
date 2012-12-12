@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
     if(sm.msg){
       printf("%s\n> ",sm.msg);fflush(stdout);
       fgets(buf,sizeof(buf),stdin);
-      char*value=trim(buf);
+      value=trim(buf);
     }
     config->put(sm.key,value&&strlen(value)?value:sm.value);
   }
@@ -130,8 +130,7 @@ int main(int argc, char *argv[]){
     }
     printf("url already in use. another url?\n> ");fflush(stdout);
     fgets(buf,sizeof(buf),stdin);
-    char*val=trim(buf);
-    if(strlen(val))config->put("url",val);
+    config->put("url",trim(buf));
   }
   config->save();
   
