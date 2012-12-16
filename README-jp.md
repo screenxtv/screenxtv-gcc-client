@@ -59,9 +59,11 @@
 
 ## 関連レポジトリ
 
+- [ScreenX TV](http://screenx.tv/)
 - [ScreenX TV Sandbox](https://github.com/yasulab/screenxtv-sandbox)
 - [ScreenX TV Ruby Client](https://github.com/tompng/screenxtv-ruby-client)
-- [ScreenX](https://github.com/tompng/screenx) (内部のソフトウェア)
+- [ScreenX TV News](https://github.com/yasulab/screenxtv-news)
+- [ScreenX](https://github.com/tompng/screenx) (internal software)
 
 ## License
 
