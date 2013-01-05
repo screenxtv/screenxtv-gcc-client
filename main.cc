@@ -43,12 +43,18 @@ void sendwinch(){
   sock->send("winch",buf);
   ioctl(fd,TIOCSWINSZ,&win);
 }
-void*winchthreadfunc(void*){
-  sendwinch();
+bool resized=false;
+void*winchwatchthread(void*){
+  while(true){
+    usleep(100*1000);
+    if(resized){
+      resized=false;
+      sendwinch();
+    }
+  }
 }
 void winchfunc(int n){
-  pthread_t ptt;
-  pthread_create(&ptt,NULL,winchthreadfunc,NULL);
+  resized=true;
 }
 void*loop_fdread(void*){
 	char buf[8192];int rd;
@@ -63,6 +69,32 @@ void*loop_fdwrite(void*){
   int len;
   while((len=read(STDIN_FILENO,buf,sizeof(buf)))>0){
     write(fd,buf,len);
+  }
+}
+
+bool auth(Config*config){
+  char buf[1024];
+  while(true){
+    char username[256],password[256];
+    printf("user name> ");fflush(stdout);
+    fgets(username,sizeof(username),stdin);
+    char*usr=trim(username);
+    if(strlen(usr)==0)return false;
+    printf("password> ");fflush(stdout);
+    fgets(password,sizeof(password),stdin);
+    char*pswd=trim(password);
+
+    char key[256],value[256];
+    sprintf(buf,"{\"user\":\"%s\",\"password\":\"%s\"}",usr,pswd);
+    sock=new KVSocket("screenx.tv",8000);
+    sock->send("init",buf);
+    sock->read(key,value,sizeof(key),sizeof(value));
+    if(streq(key,"auth")){
+      config->put("user",usr);
+      value[0]=value[strlen(value)-1]='\0';
+      config->put("auth_key",value+1);
+      return true;
+    }
   }
 }
 
@@ -110,8 +142,14 @@ int main(int argc, char *argv[]){
   while(true){
     config->save();
     ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
-    sprintf(buf,"{\"width\":%d,\"height\":%d,\"slug\":\"%s#%s\",\"info\":{\"color\":\"%s\",\"title\":\"%s\"}}",
-      win.ws_col,win.ws_row,config->get("url"),config->get("urlhash"),config->get("color"),config->get("title"));
+    char user[256],auth_key[256];
+    if(config->get("user"))sprintf(user,"\"%s\"",config->get("user"));
+    else sprintf(user,"null");
+    if(config->get("auth_key"))sprintf(auth_key,"\"%s\"",config->get("auth_key"));
+    else sprintf(auth_key,"null");
+    
+    sprintf(buf,"{\"width\":%d,\"height\":%d,\"slug\":\"%s#%s\",\"user\":%s,\"auth_key\":%s,\"info\":{\"color\":\"%s\",\"title\":\"%s\"}}",
+            win.ws_col,win.ws_row,config->get("url"),config->get("urlhash"),user,auth_key,config->get("color"),config->get("title"));
     sock=new KVSocket("screenx.tv",8000);
     sock->send("init",buf);
     sock->read(key,value,sizeof(key),sizeof(value));
@@ -128,9 +166,19 @@ int main(int argc, char *argv[]){
       config->put("urlhash",hash);
       break;
     }
-    printf("url already in use. another url?\n> ");fflush(stdout);
-    fgets(buf,sizeof(buf),stdin);
-    config->put("url",trim(buf));
+    sock->fdclose();
+    if(strstr(value,"reserved")||strstr(value,"auth_key")){
+      printf("The url '%s' is reserved. Please sign in.\n",config->get("url"));
+      if(!auth(config)){
+	printf("Please set another url.\n");fflush(stdout);
+	fgets(buf,sizeof(buf),stdin);
+	config->put("url",trim(buf));
+      }
+    }else{
+      printf("url already in use. another url?\n> ");fflush(stdout);
+      fgets(buf,sizeof(buf),stdin);
+      config->put("url",trim(buf));
+    }
   }
   config->save();
   
@@ -141,6 +189,9 @@ int main(int argc, char *argv[]){
   signal(SIGWINCH,winchfunc);
   signal(SIGCHLD,chldfunc);  
   sendwinch();
+  pthread_t ptt;
+  pthread_create(&ptt,NULL,winchwatchthread,NULL);
+
   struct termios tm=termios_saved;
   cfmakeraw(&tm);
   
@@ -149,7 +200,6 @@ int main(int argc, char *argv[]){
   setenv("LANG","en_US.UTF-8",1);
   if(!(pid=forkpty(&fd,NULL,NULL,&win)))
     execlp("screen","screen","-x",config->get("screen"),"-R",NULL);
-  pthread_t ptt;
   pthread_create(&ptt,NULL,loop_fdread,NULL);
   loop_fdwrite(NULL);
   exitWithMessage("broadcast end.");

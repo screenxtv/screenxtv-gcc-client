@@ -77,7 +77,7 @@ public:
   char sendbuf[2*65536];
   char key[65536],val[65536],*current;
   int currentlen;
- KVSocket(const char*host,int port):Socket(host,port){
+  KVSocket(const char*host,int port):Socket(host,port){
     current=key;currentlen=0;
     pthread_mutex_init(&mutex,NULL);
   }
