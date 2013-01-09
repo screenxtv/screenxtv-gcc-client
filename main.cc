@@ -75,13 +75,19 @@ void*loop_fdwrite(void*){
 bool auth(Config*config){
   char buf[1024];
   while(true){
-    char username[256],password[256];
+    char username[256];
     printf("user name> ");fflush(stdout);
     fgets(username,sizeof(username),stdin);
     char*usr=trim(username);
     if(strlen(usr)==0)return false;
+
+    /* Read password without echoing input. */
     printf("password> ");fflush(stdout);
-    fgets(password,sizeof(password),stdin);
+    char *password = (char *)malloc(256);
+    size_t n = 256;
+    my_getpass(&password, &n, stdin);
+    printf("\n\n");
+    
     char*pswd=trim(password);
 
     char key[256],value[256];

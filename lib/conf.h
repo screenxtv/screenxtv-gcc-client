@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
 #include "macros.h"
 
 
@@ -114,3 +115,24 @@ void Config::save(){
   #undef pushS
 }
   
+// Credit: http://www.gnu.org/software/libc/manual/html_node/getpass.html
+size_t my_getpass (char **lineptr, size_t *n, FILE *stream) {
+    struct termios old, new_t;
+    int nread;
+
+    /* Turn echoing off and fail if we can't. */
+    if (tcgetattr (fileno (stream), &old) != 0)
+     return -1;
+    new_t = old;
+    new_t.c_lflag &= ~ECHO;
+    if (tcsetattr (fileno (stream), TCSAFLUSH, &new_t) != 0)
+     return -1;
+
+    /* Read the password. */
+    nread = getline (lineptr, n, stream);
+
+    /* Restore terminal. */
+    (void) tcsetattr (fileno (stream), TCSAFLUSH, &old);
+
+    return nread;
+}
