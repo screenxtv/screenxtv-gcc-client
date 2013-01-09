@@ -101,6 +101,9 @@ bool auth(Config*config){
       config->put("auth_key",value+1);
       return true;
     }
+    else{
+        printf("Invalid credentials. Please try again.\n");
+    }
   }
 }
 
