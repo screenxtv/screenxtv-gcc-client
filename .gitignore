@@ -3,3 +3,4 @@
 *.out
 .DS_Store
 screenxtv.conf
+screenxtv-gcc-client
