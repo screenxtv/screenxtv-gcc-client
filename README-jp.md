@@ -26,7 +26,7 @@
 
    `cd screenxtv-gcc-client`
 
-   `g++ -o screenxtv-gcc-client main.cc -lpthread -lutil`
+   `make`
    
 3. 配信ツールを起動します。
 
