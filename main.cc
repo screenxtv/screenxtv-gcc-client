@@ -99,11 +99,13 @@ bool auth(Config*config){
       config->put("user",usr);
       value[0]=value[strlen(value)-1]='\0';
       config->put("auth_key",value+1);
+      free(password);
       return true;
     }
     else{
         printf("Invalid credentials. Please try again.\n");
     }
+    free(password);
   }
 }
 
