@@ -17,7 +17,7 @@ char*trim(char*str){
 class Config{
  public:
   char*filename;
-  KeyValue map[65536];
+  KeyValue map[LARGE_BUF_SIZE];
   int length;
   void put(const char*key,const char*val){
     for(int i=0;i<length;i++){
@@ -55,10 +55,10 @@ class Config{
 void Config::load(){
   FILE*fp=fopen(filename,"r");
   if(!fp)return;
-  char buf[65536];
-  char key[65536];
+  char buf[LARGE_BUF_SIZE];
+  char key[LARGE_BUF_SIZE];
   int keylen=0;
-  char value[65536]={0};
+  char value[LARGE_BUF_SIZE]={0};
   int valuelen=0;
   #define iswhitespace(c) ((c)==' '||(c)=='\t'||(c)=='\r'||(c)=='\n')
   #define addvalue(s) (valuelen+=strcpylen(value+valuelen,(s)),value[valuelen++]='\n',value[valuelen]='\0')
@@ -88,7 +88,7 @@ void Config::load(){
 }
 
 void Config::save(){
-  char data[65536];
+  char data[LARGE_BUF_SIZE];
   int datalen=0;
   #define pushC(c) (data[datalen++]=(c))
   #define pushS(s) (datalen+=strcpylen(data+datalen,s))
