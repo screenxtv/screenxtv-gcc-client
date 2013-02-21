@@ -41,7 +41,7 @@ int socketconnect(const char*host,int port){
 class Socket{
 public:
   int fd;
-  unsigned char readbuf[65536];
+  unsigned char readbuf[LARGE_BUF_SIZE];
   int readbuf_len,readbuf_position;
   Socket(const char*host,int port){
     readbuf_len=readbuf_position=0;
@@ -74,8 +74,8 @@ public:
 class KVSocket:public Socket{
 public:
   pthread_mutex_t mutex;
-  char sendbuf[2*65536];
-  char key[65536],val[65536],*current;
+  char sendbuf[2*LARGE_BUF_SIZE];
+  char key[LARGE_BUF_SIZE],val[LARGE_BUF_SIZE],*current;
   int currentlen;
   KVSocket(const char*host,int port):Socket(host,port){
     current=key;currentlen=0;

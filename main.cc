@@ -38,7 +38,7 @@ void chldfunc(int n){
 void sendwinch(){
   winsize win;
   ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
-  char buf[256];
+  char buf[SMALL_BUF_SIZE];
   sprintf(buf,"{\"width\":%d,\"height\":%d}",win.ws_col,win.ws_row);
   sock->send("winch",buf);
   ioctl(fd,TIOCSWINSZ,&win);
@@ -75,7 +75,7 @@ void*loop_fdwrite(void*){
 bool auth(Config*config){
   char buf[1024];
   while(true){
-    char username[256];
+    char username[SMALL_BUF_SIZE];
     printf("user name> ");fflush(stdout);
     fgets(username,sizeof(username),stdin);
     char*usr=trim(username);
@@ -83,14 +83,14 @@ bool auth(Config*config){
 
     /* Read password without echoing input. */
     printf("password> ");fflush(stdout);
-    char *password = (char *)malloc(256);
-    size_t n = 256;
+    char *password = (char *)malloc(SMALL_BUF_SIZE);
+    size_t n = SMALL_BUF_SIZE;
     my_getpass(&password, &n, stdin);
     printf("\n\n");
     
     char*pswd=trim(password);
 
-    char key[256],value[256];
+    char key[SMALL_BUF_SIZE],value[SMALL_BUF_SIZE];
     sprintf(buf,"{\"user\":\"%s\",\"password\":\"%s\"}",usr,pswd);
     sock=new KVSocket("screenx.tv",8000);
     sock->send("init",buf);
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]){
   setenv("SCREENXTV_BROADCASTING","1",1);
 
   winsize win;
-  char buf[65536];
+  char buf[LARGE_BUF_SIZE];
   tcgetattr(STDIN_FILENO,&termios_saved);
   OPTION option={0,0,0,0,0,0,0,0,0};
   char default_file[1024];
@@ -149,11 +149,11 @@ int main(int argc, char *argv[]){
   }
     
   
-  char key[256],value[65536];
+  char key[SMALL_BUF_SIZE],value[LARGE_BUF_SIZE];
   while(true){
     config->save();
     ioctl(STDOUT_FILENO,TIOCGWINSZ,&win);
-    char user[256],auth_key[256];
+    char user[SMALL_BUF_SIZE],auth_key[SMALL_BUF_SIZE];
     if(config->get("user"))sprintf(user,"\"%s\"",config->get("user"));
     else sprintf(user,"null");
     if(config->get("auth_key"))sprintf(auth_key,"\"%s\"",config->get("auth_key"));
