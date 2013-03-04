@@ -65,7 +65,7 @@
 - [ScreenX TV News](https://github.com/yasulab/screenxtv-news)
 - [ScreenX](https://github.com/tompng/screenx) (internal software)
 
-## License
+## ライセンス (MIT License)
 
 Copyright (c) 2012 Tomoya Ishida
 
