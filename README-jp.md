@@ -11,7 +11,7 @@
   - Mac OS X: [install via Xcode](http://stackoverflow.com/questions/9353444/how-to-use-install-gcc-on-mac-os-x-10-8-xcode-4-4)
   - Linux: `sudo aptitude install g++`
   - Windows: [Use Cygwin](http://www.eecg.utoronto.ca/~aamodt/ece242/cygwin.html)
-- [Screen command](http://www.gnu.org/software/screen/)
+- [Screen](http://www.gnu.org/software/screen/) コマンド
   - Mac OS X: `brew install screen`
   - Linux: `sudo aptitude install screen`
   - Windows: Download and install [this](http://directory.fsf.org/wiki/Screen) via Cygwin.
