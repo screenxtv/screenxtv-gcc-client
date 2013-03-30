@@ -1,7 +1,7 @@
 ScreenX TV Client is software that enables you to broadcast your terminal to the web. 
-The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real time.
+The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv/) in real time.
 
-[![Screenshot](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-screenxtv.png)](http://screenx.tv)
+[![Screenshot](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-screenxtv.png)](http://screenx.tv/)
 
 ## Requirements
 
@@ -18,7 +18,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 1. Download source of ScreenX TV Client.
 
-   `git clone https://github.com/tompng/screenxtv-gcc-client.git`
+   `git clone https://github.com/screenxtv/screenxtv-gcc-client.git`
    
 2. Compile the source.
 
@@ -32,7 +32,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
 4. Then, fill in the given items to start broadcasting your terminal.
 
-   ![ss-start](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-start.png)
+   ![ss-start](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-start.png)
 
 5. Done! Open the given URL with your web browser and share it with your friends :)
 
@@ -43,7 +43,7 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
    NOTE: ScreenX TV holds your session for __10 minutes__ after the `exit`. 
    
-   ![ss-stop](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-stop.png)
+   ![ss-stop](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-stop.png)
 
 2. If you'd like to resume, re-run the client program.
 
@@ -51,17 +51,19 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv) in real
 
    Then, the program automatically detects and attaches the session to resume.
    
-   ![ss-resume](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-resume.png)
+   ![ss-resume](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-resume.png)
+
 
 ## Related Works
 
 - [ScreenX TV](http://screenx.tv/)
-- [ScreenX TV Sandbox](https://github.com/yasulab/screenxtv-sandbox)
-- [ScreenX TV Ruby Client](https://github.com/tompng/screenxtv-ruby-client)
-- [ScreenX TV News](https://github.com/yasulab/screenxtv-news)
-- [ScreenX](https://github.com/tompng/screenx) (internal software)
+- [ScreenX TV GCC Client](https://github.com/screenxtv/screenxtv-gcc-client)
+- [ScreenX TV Ruby Client](https://github.com/screenxtv/screenxtv-ruby-client)
+- [ScreenX TV Sandbox](https://github.com/screenxtv/screenxtv-sandbox)
+- [ScreenX TV News](https://github.com/screenxtv/screenxtv-news)
+- [ScreenX](https://github.com/screenxtv/screenx) (Java-based stand-alone Software)
 
-## License
+## License (MIT)
 
 Copyright (c) 2012 Tomoya Ishida
 
