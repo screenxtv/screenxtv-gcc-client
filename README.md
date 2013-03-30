@@ -63,7 +63,9 @@ The broadcasted terminal is displayed at [ScreenX TV](http://screenx.tv/) in rea
 - [ScreenX TV News](https://github.com/screenxtv/screenxtv-news)
 - [ScreenX](https://github.com/screenxtv/screenx) (Java-based stand-alone Software)
 
-## License (MIT)
+## License
+
+(The MIT License)
 
 Copyright (c) 2012 Tomoya Ishida
 
