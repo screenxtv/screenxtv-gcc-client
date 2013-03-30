@@ -2,7 +2,7 @@
 ### 勉強会の配信、講義、ペアプログラミングなどのシーンでご活用ください。
 
 
-[![Screenshot](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-screenxtv.png)](http://screenx.tv)
+[![Screenshot](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-screenxtv.png)](http://screenx.tv/)
 
 
 ## 必要なソフトウェア
@@ -20,7 +20,7 @@
 
 1. 配信ツールのソースファイルを GitHub からダウンロードします。
 
-   `git clone https://github.com/tompng/screenxtv-gcc-client.git`
+   `git clone https://github.com/screenxtv/screenxtv-gcc-client.git`
    
 2. ダウンロードしたソースファイルへ移動し、コンパイルします。
 
@@ -34,7 +34,7 @@
 
 4. 必要な項目（配信URL、タイトルなど）を入力して、Enter を押します。
 
-   ![ss-start](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-start.png)
+   ![ss-start](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-start.png)
    
 5. 配信完了！配信URLからターミナル画面が配信されるので、URLを友人などにシェアしてみてください :-)
 
@@ -47,7 +47,7 @@
 
    NOTE: ScreenX TV は、 `exit` してから最長 __10分間__ セッションを保持します。
 
-   ![ss-stop](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-stop.png)
+   ![ss-stop](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-stop.png)
    
 2. 配信停止の状態から、再び配信中のターミナル画面にアタッチしたい場合は、再度配信ツールを起動して下さい。
 
@@ -55,15 +55,16 @@
 
    配信ツールを起動すると、配信中のターミナル画面に自動的にアタッチしてくれます。
    
-   ![ss-resume](https://raw.github.com/tompng/screenxtv-gcc-client/master/images/ss-resume.png)   
+   ![ss-resume](https://raw.github.com/screenxtv/screenxtv-gcc-client/master/images/ss-resume.png)   
 
 ## 関連レポジトリ
 
 - [ScreenX TV](http://screenx.tv/)
-- [ScreenX TV Sandbox](https://github.com/yasulab/screenxtv-sandbox)
-- [ScreenX TV Ruby Client](https://github.com/tompng/screenxtv-ruby-client)
-- [ScreenX TV News](https://github.com/yasulab/screenxtv-news)
-- [ScreenX](https://github.com/tompng/screenx) (internal software)
+- [ScreenX TV GCC Client](https://github.com/screenxtv/screenxtv-gcc-client)
+- [ScreenX TV Ruby Client](https://github.com/screenxtv/screenxtv-ruby-client)
+- [ScreenX TV Sandbox](https://github.com/screenxtv/screenxtv-sandbox)
+- [ScreenX TV News](https://github.com/screenxtv/screenxtv-news)
+- [ScreenX](https://github.com/screenxtv/screenx) (Java-based stand-alone Software)
 
 ## ライセンス (MIT License)
 
